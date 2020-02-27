@@ -8,6 +8,8 @@
 #include <model.cpp>
 #include <control.cpp>
 
+//Test
+
 main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 800), "Chess");
