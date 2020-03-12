@@ -64,6 +64,38 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "type": "shell",
+            "label": "g++.exe build debug active test file",
+            "command": "D:\\User_Colin\\systemConfig\\mingw32\\bin\\g++.exe",
+            "args": [
+                "-g",
+                "${workspaceFolder}\\sourceCode\\Tests\\mainTest.cpp",
+                "-o",
+                "${workspaceFolder}\\mainTest_debug.exe",
+                "-DSFML_STATIC",
+                "-ID:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\include",
+                "-LD:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\lib",
+                "-lsfml-graphics-s-d",
+                "-lsfml-window-s-d",
+                "-lsfml-system-s-d",
+                "-lopengl32",
+                "-lwinmm",
+                "-lgdi32",
+                "-lfreetype",
+                "-I${workspaceFolder}\\sourceCode"
+            ],
+            "options": {
+                "cwd": "D:\\User_Colin\\systemConfig\\mingw32\\bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

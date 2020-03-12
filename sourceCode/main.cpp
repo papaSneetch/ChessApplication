@@ -1,11 +1,14 @@
+#ifndef iostream
 #include <iostream>
+#define iostream
+#endif
 
 #ifndef SFML
 #include <SFML/Graphics.hpp>
 #define SFML
 #endif
 
-#include <model.cpp>
+#include <view.cpp>
 #include <control.cpp>
 
 main()

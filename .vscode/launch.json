@@ -24,6 +24,27 @@
                 }
             ],
             "preLaunchTask": "g++.exe build debug active file"
+        },
+        {
+            "name": "g++.exe build and debug active test file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "D:\\User_Colin\\ColinCode\\Projects\\ChessApplication\\mainTest_debug.exe",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "D:\\User_Colin\\systemConfig\\mingw32\\bin\\gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "g++.exe build debug active test file"
         }
     ]
 }
