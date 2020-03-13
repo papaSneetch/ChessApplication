@@ -303,6 +303,18 @@ public:
 
     }
 
+    chessPiece* testBounds (sf::Vector2f testPosition)
+    {
+        for (int i=0; i<32; i++)
+        {
+            if(chessPieces[i].testBounds(testPosition))
+            {
+                return &chessPieces[i];
+            }
+        }
+        return nullptr;
+    }
+
     chessWidget() /*This code will create all the 
     chessPieces we'll need.*/
     {

@@ -3,6 +3,11 @@
 #define SFML
 #endif
 
+#ifndef view
+#include <view.cpp>
+#define view
+#endif
+
 class mouse
 {
     static const unsigned int numberOfPositionsStored = 2;
@@ -10,7 +15,7 @@ class mouse
     sf::Vector2f mousePositionf[numberOfPositionsStored];
     unsigned int framesLeftButtonIsHeld = 0;
     bool isDragging = false;
-    chesspiece *objectToDrag;
+    chessPiece *objectToDrag;
     sf::Vector2f draggingOffset;
     bool leftButtonIsPressed = false;
 
@@ -31,14 +36,11 @@ public:
         return getRecordedPositionf(0) - getRecordedPositionf(1);
     }
 
-    bool leftButtonPressed()
+    bool leftButtonPressed(chessWidget &chessWidget)
     {
         leftButtonIsPressed = !leftButtonIsPressed;
         framesLeftButtonIsHeld = 1;
-        if (kingPiece.testBounds(getRecordedPositionf(0)))
-        {
-            objectToDrag = &kingPiece;
-        }
+        objectToDrag = chessWidget.testBounds(getRecordedPositionf(0));
         return leftButtonIsPressed;
     }
 
@@ -60,12 +62,13 @@ public:
         if (leftButtonIsPressed)
         {
             framesLeftButtonIsHeld = framesLeftButtonIsHeld + 1;
-            if (framesTillIsDraggingIsToggled <= framesLeftButtonIsHeld)
+            if (framesTillIsDraggingIsToggled <= framesLeftButtonIsHeld &&
+            objectToDrag != nullptr)
             {
                 isDragging = true;
                 if (framesTillIsDraggingIsToggled == framesLeftButtonIsHeld)
                 {
-                    draggingOffset = mousePositionf[0] - kingPiece.getPosition();
+                    draggingOffset = mousePositionf[0] - objectToDrag->getPosition();
                 }
             }
         }
@@ -82,7 +85,7 @@ public:
         return draggingOffset;
     }
 
-    chesspiece* getObjectToDrag()
+    chessPiece* getObjectToDrag()
     {
         return objectToDrag;
     }

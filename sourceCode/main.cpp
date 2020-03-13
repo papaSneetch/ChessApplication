@@ -8,13 +8,18 @@
 #define SFML
 #endif
 
+#ifndef view
 #include <view.cpp>
+#define view
+#endif
+
 #include <control.cpp>
 
 main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 800), "Chess");
     sf::Event event;
+    chessWidget chessObject(sf::Vector2f(100.0f,60.0f),sf::Vector2f(0.5f,0.5f));
     window.setFramerateLimit(framesPerSecond);
 
     while (window.isOpen())
@@ -30,7 +35,7 @@ main()
             case sf::Event::MouseButtonPressed:
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    mouse.leftButtonPressed();
+                    mouse.leftButtonPressed(chessObject);
                 }
                 break;
             case sf::Event::MouseButtonReleased:
@@ -40,14 +45,13 @@ main()
                 }
                 break;
             }
-            if (mouse.getIsDragging() && mouse.getObjectToDrag() == &kingPiece)
+            if (mouse.getIsDragging() && mouse.getObjectToDrag() != nullptr)
             {
-                kingPiece.dragPiece(mouse.getRecordedPositionf(0), mouse.getDragOffset());
+                mouse.getObjectToDrag()->dragPiece(mouse.getRecordedPositionf(0), mouse.getDragOffset());
             }
         }
         window.clear();
-        mainChessBoard.drawBoard(window);
-        kingPiece.drawPiece(window);
+        chessObject.drawChessWidget(window);
         window.display();
     }
     return 0;
