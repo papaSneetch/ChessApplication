@@ -8,14 +8,14 @@
             "name": "g++.exe build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "D:\\User_Colin\\ColinCode\\Projects\\ChessApplication\\main_debug.exe",
+            "program": "C:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Projects\\ChessApplication\\main_debug.exe",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": true,
             "MIMode": "gdb",
-            "miDebuggerPath": "D:\\User_Colin\\systemConfig\\mingw32\\bin\\gdb.exe",
+            "miDebuggerPath": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin\\gdb.exe",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -29,14 +29,14 @@
             "name": "g++.exe build and debug active test file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "D:\\User_Colin\\ColinCode\\Projects\\ChessApplication\\mainTest_debug.exe",
+            "program": "C:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Projects\\ChessApplication\\mainTest_debug.exe",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": true,
             "MIMode": "gdb",
-            "miDebuggerPath": "D:\\User_Colin\\systemConfig\\mingw32\\bin\\gdb.exe",
+            "miDebuggerPath": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin\\gdb.exe",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

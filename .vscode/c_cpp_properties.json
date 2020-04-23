@@ -3,16 +3,15 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "D:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML\\include/**",
-                "${workspaceFolder}\\sourceCode/**"
+                "${workspaceFolder}\\include/**",
+                "C:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML\\include/**"    
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:\\User_Colin\\systemConfig\\mingw32\\bin\\gcc.exe",
+            "compilerPath": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin\\gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x86"

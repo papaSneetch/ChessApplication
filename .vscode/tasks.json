@@ -4,26 +4,28 @@
         {
             "type": "shell",
             "label": "g++.exe build active file",
-            "command": "D:\\User_Colin\\systemConfig\\mingw32\\bin\\g++.exe",
+            "command": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin\\g++.exe",
             "args": [
                 "-g",
-                "${workspaceFolder}\\sourceCode\\main.cpp",
+                "${workspaceFolder}\\main\\main.cpp",
+                "${workspaceFolder}\\scr/**",
                 "-o",
-                "${workspaceFolder}\\main.exe",
+                "${workspaceFolder}\\exe\\main.exe",
                 "-DSFML_STATIC",
-                "-ID:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML\\include",
-                "-LD:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML\\lib",
+                "-IC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML\\include",
+                "-I${workspaceFolder}\\include",
+                "-LC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML\\lib",
                 "-lsfml-graphics-s",
                 "-lsfml-window-s",
                 "-lsfml-system-s",
                 "-lopengl32",
                 "-lwinmm",
                 "-lgdi32",
-                "-lfreetype",
-                "-I${workspaceFolder}\\sourceCode"
+                "-lfreetype"
+                
             ],
             "options": {
-                "cwd": "D:\\User_Colin\\systemConfig\\mingw32\\bin"
+                "cwd": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin"
             },
             "problemMatcher": [
                 "$gcc"
@@ -36,15 +38,15 @@
         {
             "type": "shell",
             "label": "g++.exe build debug active file",
-            "command": "D:\\User_Colin\\systemConfig\\mingw32\\bin\\g++.exe",
+            "command": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin\\g++.exe",
             "args": [
                 "-g",
                 "${workspaceFolder}\\sourceCode\\main.cpp",
                 "-o",
                 "${workspaceFolder}\\main_debug.exe",
                 "-DSFML_STATIC",
-                "-ID:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\include",
-                "-LD:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\lib",
+                "-IC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\include",
+                "-LC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\lib",
                 "-lsfml-graphics-s-d",
                 "-lsfml-window-s-d",
                 "-lsfml-system-s-d",
@@ -55,7 +57,7 @@
                 "-I${workspaceFolder}\\sourceCode"
             ],
             "options": {
-                "cwd": "D:\\User_Colin\\systemConfig\\mingw32\\bin"
+                "cwd": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin"
             },
             "problemMatcher": [
                 "$gcc"
@@ -68,15 +70,15 @@
         {
             "type": "shell",
             "label": "g++.exe build debug active test file",
-            "command": "D:\\User_Colin\\systemConfig\\mingw32\\bin\\g++.exe",
+            "command": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin\\g++.exe",
             "args": [
                 "-g",
                 "${workspaceFolder}\\sourceCode\\Tests\\mainTest.cpp",
                 "-o",
                 "${workspaceFolder}\\mainTest_debug.exe",
                 "-DSFML_STATIC",
-                "-ID:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\include",
-                "-LD:\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\lib",
+                "-IC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\include",
+                "-LC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\lib",
                 "-lsfml-graphics-s-d",
                 "-lsfml-window-s-d",
                 "-lsfml-system-s-d",
@@ -87,7 +89,7 @@
                 "-I${workspaceFolder}\\sourceCode"
             ],
             "options": {
-                "cwd": "D:\\User_Colin\\systemConfig\\mingw32\\bin"
+                "cwd": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin"
             },
             "problemMatcher": [
                 "$gcc"
