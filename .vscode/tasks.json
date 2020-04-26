@@ -41,20 +41,21 @@
             "command": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin\\g++.exe",
             "args": [
                 "-g",
-                "${workspaceFolder}\\sourceCode\\main.cpp",
+                "${workspaceFolder}\\main\\main.cpp",
+                "${workspaceFolder}\\scr/**",
                 "-o",
-                "${workspaceFolder}\\main_debug.exe",
+                "${workspaceFolder}\\exe\\main_debug.exe",
                 "-DSFML_STATIC",
-                "-IC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\include",
-                "-LC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML_debug\\lib",
-                "-lsfml-graphics-s-d",
-                "-lsfml-window-s-d",
-                "-lsfml-system-s-d",
+                "-IC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML\\include",
+                "-I${workspaceFolder}\\include",
+                "-LC:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Libaries\\rootLibaries\\SFML\\lib",
+                "-lsfml-graphics-s",
+                "-lsfml-window-s",
+                "-lsfml-system-s",
                 "-lopengl32",
                 "-lwinmm",
                 "-lgdi32",
-                "-lfreetype",
-                "-I${workspaceFolder}\\sourceCode"
+                "-lfreetype"
             ],
             "options": {
                 "cwd": "C:\\Users\\papaSneetch\\User_Colin\\systemConfig\\mingw32\\bin"

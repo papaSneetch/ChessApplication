@@ -8,7 +8,7 @@
             "name": "g++.exe build and debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "C:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Projects\\ChessApplication\\main_debug.exe",
+            "program": "${workspaceFolder}\\exe\\main_debug.exe",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
@@ -26,10 +26,10 @@
             "preLaunchTask": "g++.exe build debug active file"
         },
         {
-            "name": "g++.exe build and debug active test file",
+            "name": "g++.exe debug active file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "C:\\Users\\papaSneetch\\User_Colin\\ColinCode\\Projects\\ChessApplication\\mainTest_debug.exe",
+            "program": "${workspaceFolder}\\exe\\main_debug.exe",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
@@ -44,7 +44,6 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "g++.exe build debug active test file"
         }
     ]
 }

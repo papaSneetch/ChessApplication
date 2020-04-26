@@ -1,7 +1,7 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
-
+#include <iostream>
 #include <vector>
 #include <array>
 
@@ -31,14 +31,14 @@ class chessPieceModel
 {
 protected:
     virtual void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
-std::vector<chessMove> (&listOfChessMoves)){};
-    signed char pieceColor; // -1 is a null piece. Char is used to save memory.
+std::vector<chessMove> (&listOfChessMoves)) = 0;
+    int pieceColor;
     public:
     bool checkMove(const chessMove (&move),chessPieceModel *(&chessBoard)[8][8]);
-    signed char getPieceColor () const;
+    int getPieceColor () const;
 
 public:
-    chessPieceModel(signed char pieceColorNum) : pieceColor(pieceColorNum){};
+    chessPieceModel(int pieceColorNum) : pieceColor(pieceColorNum){};
     chessPieceModel(){};
 };
 
@@ -60,9 +60,9 @@ class kingPieceModel : public chessPieceModel
     using chessPieceModel::chessPieceModel;
     public:
     bool getIsMoved();
-    void getAllPossibleMoves(const chessPosition  position,const chessPieceModel *(&chessBoard)[8][8],
-std::vector<chessMove> (&listOfChessMoves));
-    kingPieceModel(signed char pieceColorNum) : chessPieceModel(pieceColorNum){};
+    void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
+std::vector<chessMove> (&listOfChessMoves)) override;
+    kingPieceModel(int pieceColorNum) : chessPieceModel(pieceColorNum){};
     kingPieceModel(){};
 };
 
@@ -70,9 +70,9 @@ class queenPieceModel : public chessPieceModel
 {
     using chessPieceModel::chessPieceModel;
     public:
-    void getAllPossibleMoves(const chessPosition  position,const chessPieceModel *(&chessBoard)[8][8],
-std::vector<chessMove> (&listOfChessMoves));
-    queenPieceModel(signed char pieceColorNum) :chessPieceModel(pieceColorNum){};
+    void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
+std::vector<chessMove> (&listOfChessMoves)) override;
+    queenPieceModel(int pieceColorNum) :chessPieceModel(pieceColorNum){};
     queenPieceModel(){};
 };
 
@@ -80,9 +80,9 @@ class bishopPieceModel : public chessPieceModel
 {
     using chessPieceModel::chessPieceModel;
     public:
-    void getAllPossibleMoves(const chessPosition  position,const chessPieceModel *(&chessBoard)[8][8],
-std::vector<chessMove> (&listOfChessMoves));
-    bishopPieceModel(signed char pieceColorNum) : chessPieceModel(pieceColorNum){};
+    void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
+std::vector<chessMove> (&listOfChessMoves)) override;
+    bishopPieceModel(int pieceColorNum) : chessPieceModel(pieceColorNum){};
     bishopPieceModel(){};
    
 };
@@ -91,9 +91,9 @@ class knightPieceModel : public chessPieceModel
 {
     using chessPieceModel::chessPieceModel;
     public:
-    void getAllPossibleMoves(const chessPosition  position,const chessPieceModel *(&chessBoard)[8][8],
-std::vector<chessMove> (&listOfChessMoves));
-    knightPieceModel(signed char pieceColorNum) : chessPieceModel(pieceColorNum){};
+    void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
+std::vector<chessMove> (&listOfChessMoves)) override;
+    knightPieceModel(int pieceColorNum) : chessPieceModel(pieceColorNum){};
     knightPieceModel(){};
 };
 
@@ -104,9 +104,9 @@ class rookPieceModel : public chessPieceModel
     public:
     bool getIsMoved(const chessPieceModel *(&chessBoard)[8][8]);
     bool getIsAbleToCastle(const chessPosition  position,const chessPieceModel *(&chessBoard)[8][8]);
-    void getAllPossibleMoves(const chessPosition  position,const chessPieceModel *(&chessBoard)[8][8],
-std::vector<chessMove> (&listOfChessMoves));
-    rookPieceModel(signed char pieceColorNum) : chessPieceModel(pieceColorNum){};
+    void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
+std::vector<chessMove> (&listOfChessMoves)) override;
+    rookPieceModel(int pieceColorNum) : chessPieceModel(pieceColorNum){};
     rookPieceModel(){};
     
 };
@@ -117,9 +117,9 @@ class pawnPieceModel : public chessPieceModel
     using chessPieceModel::chessPieceModel;
     public:
     static enPassantInfo enPassent_Info;
-    void getAllPossibleMoves(const chessPosition position,const chessPieceModel *(&chessBoard)[8][8],
-std::vector<chessMove> (&listOfChessMoves));
-    pawnPieceModel(signed char pieceColorNum) :chessPieceModel(pieceColorNum){};
+    void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
+std::vector<chessMove> (&listOfChessMoves)) override;
+    pawnPieceModel(int pieceColorNum) :chessPieceModel(pieceColorNum){};
     pawnPieceModel(){};
     
 };
@@ -128,9 +128,9 @@ class nullPieceModel : public chessPieceModel
 {
     using chessPieceModel::chessPieceModel;
     public:
-    void getAllPossibleMoves(const chessPosition  position,const chessPieceModel *(&chessBoard)[8][8],
-std::vector<chessMove> (&listOfChessMoves));
-    nullPieceModel(signed char pieceColorNum) : chessPieceModel(pieceColorNum){};
+    void getAllPossibleMoves(const chessPosition  position, chessPieceModel *(&chessBoard)[8][8],
+std::vector<chessMove> (&listOfChessMoves)) override;
+    nullPieceModel(int pieceColorNum) : chessPieceModel(pieceColorNum){};
     nullPieceModel(){};
     
 };
@@ -143,6 +143,7 @@ class chessModel
     chessPieceModel *chessBoard[8][8];
    
     public:
+    chessModel();
     void setChessPiece(chessPieceModel* chesspiece, chessPosition position);
     void movePiece(chessPosition originalPosition, chessPosition newPosition);
     bool checkMove(chessPosition originalPosition, chessPosition newPosition);

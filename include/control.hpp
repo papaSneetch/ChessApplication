@@ -3,6 +3,7 @@
 
 #include "view.hpp"
 #include "model.hpp"
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
 
@@ -43,11 +44,18 @@ public:
         framesLeftButtonIsHeld = 1;
         objectToDrag = widget.chessPieceCollision(getRecordedPositionf(0));
         originalChessSquare = widget.squareColision(objectToDrag -> getPosition());
+        std::cout << "Mouse position (x,y): " << getRecordedPositionf(0).x << ", " << getRecordedPositionf(0).y << std::endl;
+        std::cout << "Object position (x,y): " << objectToDrag -> getPosition().x << ", " << objectToDrag -> getPosition().y << std::endl;
+        std::cout << "Square clicked on (row,collumm): " << widget.squareColision(getRecordedPositionf(0)).x << ", " << widget.squareColision(getRecordedPositionf(0)).y << std::endl;
+        std::cout << "Original Chess Square (row, collumm): " << originalChessSquare.x << ", " << originalChessSquare.y << std::endl;
         return leftButtonIsPressed;
     }
 
     bool leftButtonReleased(chessWidget &widget, chessModel &model )
     { 
+       std::cout << "Mouse position (x,y): " << getRecordedPositionf(0).x << ", " << getRecordedPositionf(0).y << std::endl;
+       std::cout << "Square released on (row,collumm): " << widget.squareColision(getRecordedPositionf(0)).x << ", " << widget.squareColision(getRecordedPositionf(0)).y << std::endl;
+
        if (isDragging = true)
        {
             newChessSquare = widget.squareColision(objectToDrag -> getPosition());
@@ -63,6 +71,8 @@ public:
         {
             widget.placeChessPieceOnSquareByPointer(objectToDrag,originalChessSquare.x,originalChessSquare.y);
         }
+
+        std::cout << "New Chess Square (row, collumm): " << newChessSquare.x << ", " << newChessSquare.y << std::endl;
         
         leftButtonIsPressed = false;
         isDragging = false;

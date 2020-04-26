@@ -15,7 +15,7 @@ class chessBoard
 public:
     void setSprite(std::string fileName)
     {
-        std::cout << "Loading ChessBoard texture: " << fileName << std::endl;
+       // std::cout << "Loading ChessBoard texture: " << fileName << std::endl;
         if (!texture.loadFromFile(fileName))
         {
             std::cout << "Failed to load ChessBoard texture!" << std::endl;
@@ -49,12 +49,11 @@ public:
 
     chessPiece()
     {
-        centralizeSpriteOrgin();
     };
 
     void setSprite(std::string fileName)
     {
-        std::cout << "Loading ChessPiece texture: " << fileName << std::endl;
+       // std::cout << "Loading ChessPiece texture: " << fileName << std::endl;
         if (!texture.loadFromFile(fileName))
         {
             std::cout << "Failed to load ChessPiece texture!" << std::endl;
@@ -102,7 +101,7 @@ public:
 
 class chessSquares
 {
-    sf::RectangleShape squares[8][8];
+    sf::RectangleShape squares[8][8]; // row, collumm
     static constexpr float originalSizeOfSquares = 39.0f;
 
     void createSquares()
@@ -111,8 +110,8 @@ class chessSquares
         {
             for (int y = 0; y < 8; y++)
             {
-                squares[x][y] = sf::RectangleShape(sf::Vector2f(originalSizeOfSquares, originalSizeOfSquares));
-                squares[x][y].setPosition(sf::Vector2f((float)x * originalSizeOfSquares, (float)y * originalSizeOfSquares));
+                squares[y][x] = sf::RectangleShape(sf::Vector2f(originalSizeOfSquares, originalSizeOfSquares));
+                squares[y][x].setPosition(sf::Vector2f((float)x * originalSizeOfSquares, (float)y * originalSizeOfSquares));
             }
         }
     }
@@ -126,7 +125,7 @@ public:
         {
             for (int y = 0; y < 8; y++)
             {
-                squares[x][y].setPosition(newPosition + sf::Vector2f((float)x * originalSizeOfSquares * scale.x, (float)y * originalSizeOfSquares * scale.y));
+                squares[y][x].setPosition(newPosition + sf::Vector2f((float)x * originalSizeOfSquares * scale.x, (float)y * originalSizeOfSquares * scale.y));
             }
         }
     }
@@ -138,17 +137,17 @@ public:
         {
             for (int y = 0; y < 8; y++)
             {
-                squares[x][y].setScale(scale);
-                squares[x][y].setPosition(currentPosition + sf::Vector2f((float)x * originalSizeOfSquares * scale.x, (float)y * originalSizeOfSquares * scale.y));
+                squares[y][x].setScale(scale);
+                squares[y][x].setPosition(currentPosition + sf::Vector2f((float)x * originalSizeOfSquares * scale.x, (float)y * originalSizeOfSquares * scale.y));
             }
         }
     }
 
     sf::Vector2f getSquareCenter(int row, int collumm)
     {
-        sf::Vector2f squarePosition = squares[collumm][row].getPosition();
-        sf::Vector2f squareScale = squares[collumm][row].getScale();
-        return sf::Vector2f(squarePosition + sf::Vector2f(squareScale.x, -squareScale.y));
+        sf::Vector2f squarePosition = squares[row][collumm].getPosition();
+        sf::FloatRect bounds = squares[row][collumm].getGlobalBounds();
+        return (squarePosition + sf::Vector2f(bounds.width/2,bounds.height/2));
     }
 
     sf::Vector2i squareColision(sf::Vector2f position)
@@ -205,6 +204,10 @@ class chessWidget
         for (int i = 24; i < 32; i++)
         {
             chessPieces[i].setSprite("C:\\Users\\papaSneetch\\\\User_Colin\\ColinCode\\Projects\\ChessApplication\\Images\\pawn_black.png");
+        }
+        for (int i = 0; i<32; i++)
+        {
+            chessPieces[i].centralizeSpriteOrgin();
         }
         return 0;
     }

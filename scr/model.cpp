@@ -1,4 +1,5 @@
 #include "model.hpp"
+#include <iostream>
 
 using namespace chessModelInformation;
 
@@ -23,13 +24,28 @@ void chessModel::movePiece(chessPosition originalPosition, chessPosition newPosi
     chessBoard[originalPosition.row][originalPosition.collumm] = &defaultnullPieceModel;
 }
 
-signed char chessPieceModel::getPieceColor() const
+chessModel::chessModel()
+{
+    chessPosition position;
+   for (int row=0; row<8; row++)
+    {
+        for (int collumm=0; collumm<8; collumm++)
+      {
+            position.row = row;
+            position.collumm = collumm; 
+            setChessPiece(&defaultnullPieceModel,position);
+       }
+    }
+}
+
+int chessPieceModel::getPieceColor() const
 {
     return pieceColor;
 }
 
 bool chessPieceModel::checkMove(const chessMove (&move), chessModelInformation::chessPieceModel *(&chessBoard)[8][8])
 {
+    std::cout << "Checking move!"<< std::endl;
     std::vector <chessMove> possibleMoves;
     this->getAllPossibleMoves(move.originalPosition,chessBoard,possibleMoves);
     for (int i = 0; i<possibleMoves.size(); i++)
@@ -44,8 +60,8 @@ bool chessPieceModel::checkMove(const chessMove (&move), chessModelInformation::
 }
 
 template <std::size_t numberOfCastlingObjects,std::size_t numberOfChessPositionsToCheck>
-void kingPieceModel<numberOfCastlingObjects,numberOfChessPositionsToCheck>::getAllPossibleMoves(const chessPosition position, const chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
-                                         std::vector<chessMove>(&listOfChessMoves))
+void kingPieceModel<numberOfCastlingObjects,numberOfChessPositionsToCheck>::getAllPossibleMoves(const chessPosition  position, chessPieceModel *(&chessBoard)[8][8],
+std::vector<chessMove> (&listOfChessMoves))
 {
     chessMove newChessMove = {position,position.row+1,position.collumm+1};
     auto conditionalListOfChessMovesPush = [&]()
@@ -75,7 +91,7 @@ void kingPieceModel<numberOfCastlingObjects,numberOfChessPositionsToCheck>::getA
     
 }
 
-void queenPieceModel::getAllPossibleMoves(const chessPosition position, const chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
+void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
                                           std::vector<chessMove>(&listOfChessMoves))
 {
     chessPosition testPosition = position;
@@ -152,7 +168,7 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, const ch
     }
 }
 
-void bishopPieceModel::getAllPossibleMoves(const chessPosition position, const chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
+void bishopPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
                                            std::vector<chessMove>(&chessMovesVector))
 {
     chessPosition testPosition = position;
@@ -193,16 +209,25 @@ void bishopPieceModel::getAllPossibleMoves(const chessPosition position, const c
     }
 }
 
-void knightPieceModel::getAllPossibleMoves(const chessPosition position, const chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
+void knightPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
                                            std::vector<chessMove>(&chessMovesVector))
 {
     chessMove newChessMove = {position, position.row+1, position.collumm+2};
     auto conditionalListOfChessMovesPush = [&]()
     {
-        if (chessBoard[newChessMove.newPosition.row][newChessMove.newPosition.collumm]->getPieceColor() !=
+        std::cout << "Getting all possible moves for Knight!"<< std::endl;
+
+        if (newChessMove.newPosition.row < 8 && newChessMove.newPosition.collumm<8 && newChessMove.newPosition.row>-1 && newChessMove.newPosition.collumm >-1)
+        {
+            std::cout << "Checking (row,collumm):" << newChessMove.newPosition.row << ", " << newChessMove.newPosition.collumm << std::endl;
+        if (chessBoard[newChessMove.newPosition.row][newChessMove.newPosition.collumm] -> getPieceColor() !=
         chessBoard[position.row][position.collumm] -> getPieceColor())
         {
             chessMovesVector.push_back(newChessMove);
+            std::cout << "Adding possible chess move: (Original Space, New Space) (Row, Collumm): " << std::endl;
+            std::cout << newChessMove.originalPosition.row << ", " << newChessMove.originalPosition.collumm << std::endl;
+            std::cout << newChessMove.newPosition.row << ", " << newChessMove.newPosition.collumm << std::endl;
+        }
         }
     };
 
@@ -224,7 +249,7 @@ void knightPieceModel::getAllPossibleMoves(const chessPosition position, const c
 
 }
 
-void rookPieceModel::getAllPossibleMoves(const chessPosition position, const chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
+void rookPieceModel::getAllPossibleMoves(const chessPosition position,chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
                                          std::vector<chessMove>(&chessMovesVector))
 {       
     chessPosition testPosition = position;
@@ -265,7 +290,7 @@ void rookPieceModel::getAllPossibleMoves(const chessPosition position, const che
     }
 }
 
-void pawnPieceModel::getAllPossibleMoves(const chessPosition position, const chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
+void pawnPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
                                          std::vector<chessMove>(&chessMovesVector))
 {
     chessMove newMove;
@@ -302,7 +327,13 @@ void pawnPieceModel::getAllPossibleMoves(const chessPosition position, const che
     }
 }
 
-void nullPieceModel::getAllPossibleMoves(const chessPosition position, const chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
+void nullPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
                                          std::vector<chessMove>(&chessMovesVector))
 {
+}
+
+void magicFunction() //This function isn't used anywhere. It's just here to avoid linker errors for the kingPieceModel's template.
+//This is complete vodoo magic.
+{
+    kingPieceModel<2,2> tempKing(0);
 }

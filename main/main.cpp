@@ -12,7 +12,6 @@ int main()
     chessWidget chessObjectWidget(sf::Vector2f(100.0f,60.0f),sf::Vector2f(1.0f,1.0f));
     chessModel chessObjectModel;
     whiteGameSetter.setUpGame(&chessObjectWidget,&chessObjectModel);
-    
     window.setFramerateLimit(framesPerSecond);
 
     while (window.isOpen())
