@@ -17,6 +17,18 @@ extern pawnPieceModel blackPawnPieceModel;
 extern nullPieceModel defaultnullPieceModel;
 
 
+void setWhitePawnMetaData(chessWidget *chesswidget, chessModel* chessmodel)
+{
+    whitePawnPieceModel.setDirection(-1);
+    blackPawnPieceModel.setDirection(1);
+}
+
+void setBlackPawnMetaData(chessWidget *chesswidget, chessModel* chessmodel)
+{
+    blackPawnPieceModel.setDirection(-1);
+    whitePawnPieceModel.setDirection(1);
+}
+
 const std::vector <mapValue> whiteMapValue 
 {
     {{0,0},&blackRookPieceModel,chessWidget::blackQueenRook},
@@ -51,6 +63,11 @@ const std::vector <mapValue> whiteMapValue
     {{6,5},&whitePawnPieceModel,chessWidget::whiteFPawn},
     {{6,6},&whitePawnPieceModel,chessWidget::whiteGPawn},
     {{6,7},&whitePawnPieceModel,chessWidget::whiteHPawn}
+};
+
+const std::vector<void (*)(chessWidget *chesswidget, chessModel* chessmodel)> whiteMapFunctions
+{
+    (*setWhitePawnMetaData)
 };
 
 const std::vector <mapValue> blackMapValue 
@@ -89,5 +106,10 @@ const std::vector <mapValue> blackMapValue
     {{1,0},&whitePawnPieceModel,chessWidget::whiteHPawn}
 };
 
-const boardSetter whiteGameSetter(whiteMapValue);
-const boardSetter blackGameSetter(blackMapValue);
+const std::vector<void (*)(chessWidget *chesswidget, chessModel* chessmodel)> blackMapFunctions
+{
+    (*setBlackPawnMetaData)
+};
+
+const boardSetter whiteGameSetter(whiteMapValue,whiteMapFunctions);
+const boardSetter blackGameSetter(blackMapValue,blackMapFunctions);

@@ -294,42 +294,60 @@ void pawnPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
                                          std::vector<chessMove>(&chessMovesVector))
 {
     chessMove newMove;
+    std::cout << "Chess Piece Direction: " << direction << std::endl;
     
-    if (chessBoard[position.row + direction][position.collumm+1]->getPieceColor() != this->getPieceColor() ||
+    if ((position.row + direction) < 8 && (position.row + direction) > -1)
+    {
+    
+    if (position.collumm+1 < 8)
+    {
+    if ((chessBoard[position.row + direction][position.collumm+1]->getPieceColor() != this->getPieceColor() && 
+    chessBoard[position.row + direction][position.collumm+1]->getPieceColor() != -1) ||
     ( this -> enPassent_Info.movedTwoSpaces==true && this -> enPassent_Info.lastPawnMove.newPosition.row == position.row && 
     this -> enPassent_Info.lastPawnMove.newPosition.collumm == position.collumm+1))
     {
-        newMove = {position, position.row+direction, position.collumm+1};
+        newMove = {position, (position.row+direction), (position.collumm+1)};
         chessMovesVector.push_back(newMove);
     }
-
-    if (chessBoard[position.row + direction][position.collumm-1]->getPieceColor() != this->getPieceColor() ||
+    }
+    if (position.collumm-1 > -1)
+    {
+    if ((chessBoard[position.row + direction][position.collumm-1]->getPieceColor() != this->getPieceColor() && 
+    chessBoard[position.row + direction][position.collumm-1]->getPieceColor() != -1) ||
     ( this->enPassent_Info.movedTwoSpaces==true && this->enPassent_Info.lastPawnMove.newPosition.row == position.row && 
     this->enPassent_Info.lastPawnMove.newPosition.collumm == position.collumm-1))
     {
-        newMove = {position, position.row+direction, position.collumm-1};
+        newMove = {position, (position.row+direction), (position.collumm-1)};
         chessMovesVector.push_back(newMove);
     }
-    {
-        newMove = {position, position.row+direction, position.collumm+1};
     }
     
     if (chessBoard[position.row + direction][position.collumm]->getPieceColor() == -1)
     {
-        newMove = {position, position.row+direction, position.collumm};
+        newMove = {position, (position.row+direction), (position.collumm)};
         chessMovesVector.push_back(newMove);
     }
+    }
+    if ((position.row + (2*direction)) < 8 && (position.row + (2*direction)) >-1 )
+    {
     if (chessBoard[position.row + (2*direction)][position.collumm]->getPieceColor() == -1)
     {
-        newMove = {position, position.row+(2*direction), position.collumm};
+        newMove = {position, (position.row+(2*direction)), (position.collumm)};
         chessMovesVector.push_back(newMove);
         enPassent_Info = {true, newMove};
+    }
     }
 }
 
 void nullPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
                                          std::vector<chessMove>(&chessMovesVector))
 {
+}
+
+
+void pawnPieceModel::setDirection(int changeofRow)
+{
+    direction = changeofRow;
 }
 
 void magicFunction() //This function isn't used anywhere. It's just here to avoid linker errors for the kingPieceModel's template.

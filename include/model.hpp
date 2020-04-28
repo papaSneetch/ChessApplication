@@ -117,6 +117,7 @@ class pawnPieceModel : public chessPieceModel
     using chessPieceModel::chessPieceModel;
     public:
     static enPassantInfo enPassent_Info;
+    void setDirection(int changeofRow);
     void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
 std::vector<chessMove> (&listOfChessMoves)) override;
     pawnPieceModel(int pieceColorNum) :chessPieceModel(pieceColorNum){};
