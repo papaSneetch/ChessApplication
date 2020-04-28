@@ -24,10 +24,14 @@ using namespace setUpBoard;
 struct boardSetter
 {
     std::vector<mapValue> boardSetterData;
+    std::vector<void (*)(chessWidget *chesswidget, chessModel* chessmodel)> functionsToRun;
 
     boardSetter(){};
 
     boardSetter(std::vector<mapValue> data) : boardSetterData(data){};
+
+    boardSetter(std::vector<mapValue> data,  std::vector<void (*)(chessWidget *chesswidget, chessModel* chessmodel)> functions)
+     : boardSetterData(data), functionsToRun(functions){};
 
     void setUpGame(chessWidget *chesswidget, chessModel *chessmodel) const
     {
@@ -36,6 +40,10 @@ struct boardSetter
             chesswidget->placeChessPieceOnSquare(boardSetterData[i].chessPieceMapPointer,
                                                  boardSetterData[i].position.row, boardSetterData[i].position.collumm);
             chessmodel->setChessPiece(boardSetterData[i].chessPieceModelMapPointer, boardSetterData[i].position);
+        }
+         for (int i = 0; i < functionsToRun.size(); i++)
+        {
+            functionsToRun[i](chesswidget,chessmodel);
         }
     }
 };
