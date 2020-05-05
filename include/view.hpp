@@ -254,6 +254,19 @@ public:
         chessPieces[chessPiece].setPosition(squares.getSquareCenter(row, collumm));
     }
 
+    void placeChessPieceOnSquare(int originalRow, int originalCollumm, int row, int collumm)
+    {
+        sf::Vector2f squareCenter = squares.getSquareCenter(originalRow,originalCollumm);
+        for (int i=0; i<32; i++)
+        {
+            if(chessPieces[i].testBounds(squareCenter))
+            {
+                chessPieces[i].setPosition(squares.getSquareCenter(row, collumm));
+                i=32;
+            }
+        }
+    }
+
     void placeChessPieceOnSquareByPointer(chessPiece* chessPiece, int row, int collumm)
     {
         chessPiece->setPosition(squares.getSquareCenter(row, collumm));

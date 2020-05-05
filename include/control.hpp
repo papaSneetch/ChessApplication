@@ -4,6 +4,8 @@
 #include "view.hpp"
 #include "model.hpp"
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <SFML/Graphics.hpp>
 
 
@@ -60,16 +62,33 @@ public:
        {
             newChessSquare = widget.squareColision(objectToDrag -> getPosition());
        }
-        chessModelInformation::chessPosition originalPosition = {originalChessSquare.x,originalChessSquare.y};
-        chessModelInformation::chessPosition newPosition = {newChessSquare.x,newChessSquare.y};
-        if (model.checkMove(originalPosition,newPosition))
+        chessMove testMove;
+        testMove.originalPosition = {originalChessSquare.x,originalChessSquare.y};
+        testMove.newPosition = {newChessSquare.x,newChessSquare.y};
+        std::vector<chessMove> listOfChessMoves;
+        model.getAllPossibleBasicMoves(listOfChessMoves,testMove.originalPosition);
+        if (std::find(listOfChessMoves.begin(),listOfChessMoves.end(),testMove) != listOfChessMoves.end())
         {
-            model.movePiece(originalPosition,newPosition);
+            model.movePiece(testMove);
             widget.placeChessPieceOnSquareByPointer(objectToDrag,newChessSquare.x,newChessSquare.y);
         }
         else
         {
+            listOfChessMoves.clear();
+            model.getAllPossibleCastlingMoves(listOfChessMoves,testMove.originalPosition);
+            std::vector<chessMove>::iterator it = std::find(listOfChessMoves.begin(),listOfChessMoves.end(),testMove);
+            if ( it != listOfChessMoves.end())
+            {
+                it++;
+                model.movePiece(*it);
+                widget.placeChessPieceOnSquare(it->originalPosition.row,it->originalPosition.collumm,it->newPosition.row,it->newPosition.collumm);
+                model.movePiece(testMove);
+                widget.placeChessPieceOnSquareByPointer(objectToDrag,newChessSquare.x,newChessSquare.y);
+            }
+            else
+            {
             widget.placeChessPieceOnSquareByPointer(objectToDrag,originalChessSquare.x,originalChessSquare.y);
+            }
         }
 
         std::cout << "New Chess Square (row, collumm): " << newChessSquare.x << ", " << newChessSquare.y << std::endl;
