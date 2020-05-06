@@ -127,6 +127,11 @@ bool chessModel::checkIfSpaceIsAttacked(chessPosition spaceBeingAttacked, int de
     return checkIfSpaceIsAttackedFunction(spaceBeingAttacked, defendingColor, this->chessBoard);
 }
 
+int chessModel::getPieceOnSpaceColor(chessPosition position)
+{
+    return chessBoard[position.row][position.collumm] -> getPieceColor();
+}
+
 chessModel::chessModel()
 {
     chessPosition position;

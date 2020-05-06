@@ -163,6 +163,7 @@ class chessModel
     void getAllPossibleCastlingMoves(std::vector<chessMove>(&listOfChessMoves),chessPosition position);
     void getAllPossibleCastlingMoves(std::vector<chessMove>(&listOfChessMoves),int color);
     bool checkIfSpaceIsAttacked(chessPosition spaceBeingAttacked, int defendingColor);
+    int getPieceOnSpaceColor(chessPosition position);
 
 };
 
