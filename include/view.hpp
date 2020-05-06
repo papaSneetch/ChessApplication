@@ -44,8 +44,11 @@ class chessPiece
 {
     sf::Sprite sprite;
     sf::Texture texture;
+    
 
 public:
+
+    bool iconify = true;
 
     chessPiece()
     {
@@ -73,7 +76,10 @@ public:
 
     int drawPiece(sf::RenderWindow &window)
     {
+        if (iconify)
+        {
         window.draw(sprite);
+        }
         return 0;
     }
     int dragPiece(sf::Vector2f mousePosition, sf::Vector2f offset)
@@ -84,7 +90,11 @@ public:
 
     bool testBounds(sf::Vector2f position)
     {
-        return sprite.getGlobalBounds().contains(position);
+        if (iconify)
+        {
+            return sprite.getGlobalBounds().contains(position);
+        }
+        return false;
     }
 
     sf::Vector2f getPosition()
@@ -254,9 +264,35 @@ public:
         chessPieces[chessPiece].setPosition(squares.getSquareCenter(row, collumm));
     }
 
+    void placeChessPieceOnSquare(int originalRow, int originalCollumm, int row, int collumm)
+    {
+        sf::Vector2f squareCenter = squares.getSquareCenter(originalRow,originalCollumm);
+        for (int i=0; i<32; i++)
+        {
+            if(chessPieces[i].testBounds(squareCenter))
+            {
+                chessPieces[i].setPosition(squares.getSquareCenter(row, collumm));
+                i=32;
+            }
+        }
+    }
+
     void placeChessPieceOnSquareByPointer(chessPiece* chessPiece, int row, int collumm)
     {
         chessPiece->setPosition(squares.getSquareCenter(row, collumm));
+    }
+
+    void removeCheessPieceOnSquare(int row, int collumm)
+    {
+        sf::Vector2f squareCenter = squares.getSquareCenter(row,collumm);
+        for (int i=0; i<32; i++)
+        {
+            if(chessPieces[i].testBounds(squareCenter))
+            {
+                chessPieces[i].iconify = false;
+                i=32;
+            }
+        }
     }
 
     void resetChessPieces()
