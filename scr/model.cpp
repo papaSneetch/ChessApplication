@@ -451,7 +451,7 @@ void pawnPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
             chessMovesVector.push_back(newMove);
         }
     }
-    if ((position.row + (2 * direction)) < 8 && (position.row + (2 * direction)) > -1)
+    if (((position.row + (2 * direction)) < 8) && ((position.row + (2 * direction)) > -1) && (isMoved == false))
     {
         if (chessBoard[position.row + (2 * direction)][position.collumm]->getPieceColor() == -1)
         {

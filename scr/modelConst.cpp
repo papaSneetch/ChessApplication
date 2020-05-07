@@ -14,6 +14,26 @@ rookPieceModel whiteRookPieceModelLeft(0);
 rookPieceModel whiteRookPieceModelRight(0);
 rookPieceModel blackRookPieceModelLeft(1);
 rookPieceModel blackRookPieceModelRight(1);
-pawnPieceModel whitePawnPieceModel(0);
-pawnPieceModel blackPawnPieceModel(1);
+pawnPieceModel whitePawnPieceModel[8] = 
+{
+pawnPieceModel(0),
+pawnPieceModel(0),
+pawnPieceModel(0),
+pawnPieceModel(0),
+pawnPieceModel(0),
+pawnPieceModel(0),
+pawnPieceModel(0),
+pawnPieceModel(0)
+};
+pawnPieceModel blackPawnPieceModel[8] = 
+{
+pawnPieceModel(1),
+pawnPieceModel(1),
+pawnPieceModel(1),
+pawnPieceModel(1),
+pawnPieceModel(1),
+pawnPieceModel(1),
+pawnPieceModel(1),
+pawnPieceModel(1)
+};
 nullPieceModel defaultnullPieceModel(-1);
