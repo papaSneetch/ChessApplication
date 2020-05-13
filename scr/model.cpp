@@ -9,6 +9,18 @@ enPassantInfo pawnPieceModel::enPassent_Info;
 
 extern nullPieceModel defaultnullPieceModel;
 
+int chessModelInformation::findInFirstElement(std::vector<std::vector<chessMove>> &listOfChessMoves, chessMove testMove)
+{
+    for (int i = 0; i < listOfChessMoves.size(); i++)
+    {
+        if (listOfChessMoves[i][0] == testMove)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 bool chessPosition::operator==(const chessPosition &position)
 {
     if ((row == position.row) && (collumm == position.collumm))
@@ -35,14 +47,10 @@ bool chessMove::operator==(const chessMove &move)
 
 bool chessModel::checkMove(chessMove move)
 {
-    std::vector<chessMove> listOfChessMoves;
+    std::vector<std::vector<chessMove>> listOfChessMoves;
     chessBoard[move.originalPosition.row][move.originalPosition.collumm]->getAllPossibleMoves(move.originalPosition, chessBoard, listOfChessMoves);
 
-    if (std::find(listOfChessMoves.begin(), listOfChessMoves.end(), move) != listOfChessMoves.end())
-    {
-        return true;
-    }
-    return false;
+    return findInFirstElement(listOfChessMoves, move);
 }
 
 void chessModel::setChessPiece(chessPieceModel *chesspiece, chessPosition position)
@@ -52,12 +60,18 @@ void chessModel::setChessPiece(chessPieceModel *chesspiece, chessPosition positi
 
 void chessModel::movePiece(chessMove move)
 {
+    pawnPieceModel *pawnPiece = dynamic_cast<pawnPieceModel *> (chessBoard[move.originalPosition.row][move.originalPosition.collumm]);
+    if (pawnPiece)
+    {
+       pawnPiece ->enPassent_Info.lastPawnMove = move;
+    }
+    
     chessBoard[move.originalPosition.row][move.originalPosition.collumm]->isMoved = true;
     chessBoard[move.newPosition.row][move.newPosition.collumm] = chessBoard[move.originalPosition.row][move.originalPosition.collumm];
     chessBoard[move.originalPosition.row][move.originalPosition.collumm] = &defaultnullPieceModel;
 }
 
-void chessModel::getAllPossibleBasicMoves(std::vector<chessMove>(&listOfChessMoves))
+void chessModel::getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves))
 {
     for (int row = 0; row < 8; row++)
     {
@@ -68,12 +82,12 @@ void chessModel::getAllPossibleBasicMoves(std::vector<chessMove>(&listOfChessMov
     }
 }
 
-void chessModel::getAllPossibleBasicMoves(std::vector<chessMove>(&listOfChessMoves), chessPosition position)
+void chessModel::getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), chessPosition position)
 {
     chessBoard[position.row][position.collumm]->getAllPossibleMoves(position, chessBoard, listOfChessMoves);
 }
 
-void chessModel::getAllPossibleBasicMoves(std::vector<chessMove>(&listOfChessMoves), int color)
+void chessModel::getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), int color)
 {
     for (int row = 0; row < 8; row++)
     {
@@ -87,7 +101,7 @@ void chessModel::getAllPossibleBasicMoves(std::vector<chessMove>(&listOfChessMov
     }
 }
 
-void chessModel::getAllPossibleCastlingMoves(std::vector<chessMove>(&listOfChessMoves), chessPosition position)
+void chessModel::getAllPossibleCastlingMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), chessPosition position)
 {
     kingPieceModel *testPiece = dynamic_cast<kingPieceModel *>(chessBoard[position.row][position.collumm]);
     if (testPiece)
@@ -105,13 +119,13 @@ bool checkIfSpaceIsAttackedFunction(chessPosition spaceBeingAttacked, int defend
             int currentColor = chessBoard[row][collumm]->getPieceColor();
             if ((currentColor != defendingColor) && (currentColor != -1))
             {
-                std::vector<chessMove> listOfChessMoves;
+                std::vector<std::vector<chessMove>> listOfChessMoves;
                 chessPosition Testposition = {row, collumm};
                 chessBoard[row][collumm]->getAllPossibleMoves(Testposition, chessBoard, listOfChessMoves);
                 for (int i = 0; i < listOfChessMoves.size(); i++)
                 {
-                    if ((listOfChessMoves[i].newPosition.row == spaceBeingAttacked.row) &&
-                        (listOfChessMoves[i].newPosition.collumm == spaceBeingAttacked.collumm))
+                    if ((listOfChessMoves[i][1].newPosition.row == spaceBeingAttacked.row) &&
+                        (listOfChessMoves[i][1].newPosition.collumm == spaceBeingAttacked.collumm))
                     {
                         return true;
                     }
@@ -129,7 +143,7 @@ bool chessModel::checkIfSpaceIsAttacked(chessPosition spaceBeingAttacked, int de
 
 int chessModel::getPieceOnSpaceColor(chessPosition position)
 {
-    return chessBoard[position.row][position.collumm] -> getPieceColor();
+    return chessBoard[position.row][position.collumm]->getPieceColor();
 }
 
 chessModel::chessModel()
@@ -152,7 +166,7 @@ int chessPieceModel::getPieceColor() const
 }
 
 void kingPieceModel::getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
-                                         std::vector<chessMove>(&listOfChessMoves))
+                                         std::vector<std::vector<chessMove>>(&listOfChessMoves))
 {
     chessMove newChessMove = {position, position.row + 1, position.collumm + 1};
     auto conditionalListOfChessMovesPush = [&]() {
@@ -161,7 +175,7 @@ void kingPieceModel::getAllPossibleMoves(const chessPosition position, chessPiec
             if (chessBoard[newChessMove.newPosition.row][newChessMove.newPosition.collumm]->getPieceColor() !=
                 this->getPieceColor())
             {
-                listOfChessMoves.push_back(newChessMove);
+                listOfChessMoves.push_back({newChessMove});
             }
         }
     };
@@ -183,7 +197,8 @@ void kingPieceModel::getAllPossibleMoves(const chessPosition position, chessPiec
     conditionalListOfChessMovesPush();
 }
 
-void kingPieceModel::getAllPossibleCastlingMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8], std::vector<chessMove>(&listOfChessMoves))
+void kingPieceModel::getAllPossibleCastlingMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
+                                                 std::vector<std::vector<chessMove>>(&listOfChessMoves))
 {
     if (!isMoved)
     {
@@ -194,9 +209,9 @@ void kingPieceModel::getAllPossibleCastlingMoves(const chessPosition position, c
             {
                 for (int j = 0; j < castlingParameters[i].chessPositionsToCheck.size(); j++)
                 {
-                    for (int k=0; k<castlingParameters[i].chessPositionsToClear.size(); k++)
+                    for (int k = 0; k < castlingParameters[i].chessPositionsToClear.size(); k++)
                     {
-                        if ((chessBoard[castlingParameters[i].chessPositionsToClear[k].row][castlingParameters[i].chessPositionsToClear[k].collumm] -> getPieceColor()) != -1)
+                        if ((chessBoard[castlingParameters[i].chessPositionsToClear[k].row][castlingParameters[i].chessPositionsToClear[k].collumm]->getPieceColor()) != -1)
                         {
                             movePiece = false;
                             j = castlingParameters[i].chessPositionsToCheck.size();
@@ -213,9 +228,9 @@ void kingPieceModel::getAllPossibleCastlingMoves(const chessPosition position, c
                 if (movePiece)
                 {
                     chessMove move = {position, castlingParameters[i].positionToMoveKingTo};
-                    listOfChessMoves.push_back(move);
+                    listOfChessMoves.push_back({move});
                     move = {castlingParameters[i].positionOfCastlingPiece, castlingParameters[i].positionToMoveCastilingPieceTo};
-                    listOfChessMoves.push_back(move);
+                    listOfChessMoves.back().push_back({move});
                 }
             }
         }
@@ -223,7 +238,7 @@ void kingPieceModel::getAllPossibleCastlingMoves(const chessPosition position, c
 }
 
 void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
-                                          std::vector<chessMove>(&listOfChessMoves))
+                                          std::vector<std::vector<chessMove>>(&listOfChessMoves))
 {
     chessPosition testPosition = position;
     bool ranIntoPiece = false;
@@ -231,7 +246,7 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessMod
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        listOfChessMoves.push_back(newChessMove);
+        listOfChessMoves.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -240,7 +255,7 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessMod
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        listOfChessMoves.push_back(newChessMove);
+        listOfChessMoves.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -249,7 +264,7 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessMod
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        listOfChessMoves.push_back(newChessMove);
+        listOfChessMoves.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -258,7 +273,7 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessMod
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        listOfChessMoves.push_back(newChessMove);
+        listOfChessMoves.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -267,7 +282,7 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessMod
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        listOfChessMoves.push_back(newChessMove);
+        listOfChessMoves.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -276,7 +291,7 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessMod
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        listOfChessMoves.push_back(newChessMove);
+        listOfChessMoves.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -285,7 +300,7 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessMod
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        listOfChessMoves.push_back(newChessMove);
+        listOfChessMoves.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -294,13 +309,13 @@ void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessMod
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        listOfChessMoves.push_back(newChessMove);
+        listOfChessMoves.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
 }
 
 void bishopPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
-                                           std::vector<chessMove>(&chessMovesVector))
+                                           std::vector<std::vector<chessMove>>(&chessMovesVector))
 {
     chessPosition testPosition = position;
     bool ranIntoPiece = false;
@@ -308,7 +323,7 @@ void bishopPieceModel::getAllPossibleMoves(const chessPosition position, chessMo
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        chessMovesVector.push_back(newChessMove);
+        chessMovesVector.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -317,7 +332,7 @@ void bishopPieceModel::getAllPossibleMoves(const chessPosition position, chessMo
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        chessMovesVector.push_back(newChessMove);
+        chessMovesVector.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -326,7 +341,7 @@ void bishopPieceModel::getAllPossibleMoves(const chessPosition position, chessMo
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        chessMovesVector.push_back(newChessMove);
+        chessMovesVector.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -335,13 +350,13 @@ void bishopPieceModel::getAllPossibleMoves(const chessPosition position, chessMo
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1)
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        chessMovesVector.push_back(newChessMove);
+        chessMovesVector.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
 }
 
 void knightPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
-                                           std::vector<chessMove>(&chessMovesVector))
+                                           std::vector<std::vector<chessMove>>(&chessMovesVector))
 {
     chessMove newChessMove = {position, position.row + 1, position.collumm + 2};
     auto conditionalListOfChessMovesPush = [&]() {
@@ -350,7 +365,7 @@ void knightPieceModel::getAllPossibleMoves(const chessPosition position, chessMo
             if (chessBoard[newChessMove.newPosition.row][newChessMove.newPosition.collumm]->getPieceColor() !=
                 chessBoard[position.row][position.collumm]->getPieceColor())
             {
-                chessMovesVector.push_back(newChessMove);
+                chessMovesVector.push_back({newChessMove});
             }
         }
     };
@@ -373,7 +388,7 @@ void knightPieceModel::getAllPossibleMoves(const chessPosition position, chessMo
 }
 
 void rookPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
-                                         std::vector<chessMove>(&chessMovesVector))
+                                         std::vector<std::vector<chessMove>>(&chessMovesVector))
 {
     chessPosition testPosition = position;
     bool ranIntoPiece = false;
@@ -381,7 +396,7 @@ void rookPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() != this->getPieceColor())
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        chessMovesVector.push_back(newChessMove);
+        chessMovesVector.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -390,7 +405,7 @@ void rookPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() != this->getPieceColor())
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        chessMovesVector.push_back(newChessMove);
+        chessMovesVector.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -399,7 +414,7 @@ void rookPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() != -this->getPieceColor())
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        chessMovesVector.push_back(newChessMove);
+        chessMovesVector.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
     testPosition = position;
@@ -408,62 +423,77 @@ void rookPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
            chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() != this->getPieceColor())
     {
         chessMove newChessMove = {position, testPosition.row, testPosition.collumm};
-        chessMovesVector.push_back(newChessMove);
+        chessMovesVector.push_back({newChessMove});
         ranIntoPiece = (chessBoard[testPosition.row][testPosition.collumm]->getPieceColor() == -1) ? false : true;
     }
 }
 
 void pawnPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
-                                         std::vector<chessMove>(&chessMovesVector))
+                                         std::vector<std::vector<chessMove>>(&chessMovesVector))
 {
     chessMove newMove;
-    std::cout << "Chess Piece Direction: " << direction << std::endl;
 
     if ((position.row + direction) < 8 && (position.row + direction) > -1)
     {
 
         if (position.collumm + 1 < 8)
         {
-            if ((chessBoard[position.row + direction][position.collumm + 1]->getPieceColor() != this->getPieceColor() &&
-                 chessBoard[position.row + direction][position.collumm + 1]->getPieceColor() != -1) ||
-                (this->enPassent_Info.movedTwoSpaces == true && this->enPassent_Info.lastPawnMove.newPosition.row == position.row &&
-                 this->enPassent_Info.lastPawnMove.newPosition.collumm == position.collumm + 1))
+            if ((enPassent_Info.lastPawnMove.enPessant == true) && (enPassent_Info.lastPawnMove.newPosition.row == position.row) &&
+                (enPassent_Info.lastPawnMove.newPosition.collumm == (position.collumm + 1)))
             {
+                
+                std::cout << "Enpessent to (row, collumm): " << (position.row + direction) << ", " << (position.collumm + 1) << std::endl;
                 newMove = {position, (position.row + direction), (position.collumm + 1)};
-                chessMovesVector.push_back(newMove);
+                chessMovesVector.push_back({newMove});
+                newMove = {position, enPassent_Info.lastPawnMove.newPosition};
+                chessMovesVector.back().push_back({newMove});
+            }
+
+            else if ((chessBoard[position.row + direction][position.collumm + 1]->getPieceColor() != this->getPieceColor() &&
+                      chessBoard[position.row + direction][position.collumm + 1]->getPieceColor() != -1))
+            {  
+                newMove = {position, (position.row + direction), (position.collumm + 1)};
+                chessMovesVector.push_back({newMove});
             }
         }
         if (position.collumm - 1 > -1)
         {
-            if ((chessBoard[position.row + direction][position.collumm - 1]->getPieceColor() != this->getPieceColor() &&
-                 chessBoard[position.row + direction][position.collumm - 1]->getPieceColor() != -1) ||
-                (this->enPassent_Info.movedTwoSpaces == true && this->enPassent_Info.lastPawnMove.newPosition.row == position.row &&
-                 this->enPassent_Info.lastPawnMove.newPosition.collumm == position.collumm - 1))
+            if ((enPassent_Info.lastPawnMove.enPessant == true) && (enPassent_Info.lastPawnMove.newPosition.row == position.row) &&
+                 (enPassent_Info.lastPawnMove.newPosition.collumm == (position.collumm - 1)))
+            {
+                std::cout << "Enpessent to (row, collumm): " << (position.row + direction) << ", " << (position.collumm + 1) << std::endl;
+                newMove = {position, (position.row + direction), (position.collumm - 1)};
+                chessMovesVector.push_back({newMove});
+                newMove = {position, enPassent_Info.lastPawnMove.newPosition};
+                chessMovesVector.back().push_back({newMove});
+            }
+
+            else if ((chessBoard[position.row + direction][position.collumm - 1]->getPieceColor() != this->getPieceColor() &&
+                      chessBoard[position.row + direction][position.collumm - 1]->getPieceColor() != -1))
             {
                 newMove = {position, (position.row + direction), (position.collumm - 1)};
-                chessMovesVector.push_back(newMove);
+                chessMovesVector.push_back({newMove});
             }
         }
 
         if (chessBoard[position.row + direction][position.collumm]->getPieceColor() == -1)
         {
             newMove = {position, (position.row + direction), (position.collumm)};
-            chessMovesVector.push_back(newMove);
+            chessMovesVector.push_back({newMove});
         }
     }
-    if ((position.row + (2 * direction)) < 8 && (position.row + (2 * direction)) > -1)
+    if (((position.row + (2 * direction)) < 8) && ((position.row + (2 * direction)) > -1) && (isMoved == false))
     {
         if (chessBoard[position.row + (2 * direction)][position.collumm]->getPieceColor() == -1)
         {
-            newMove = {position, (position.row + (2 * direction)), (position.collumm)};
-            chessMovesVector.push_back(newMove);
-            enPassent_Info = {true, newMove};
+            newMove = {position, {(position.row + (2 * direction)), (position.collumm)},true};
+            chessMovesVector.push_back({newMove});
         }
     }
 }
 
 void nullPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
-                                         std::vector<chessMove>(&chessMovesVector))
+                                         std::vector<std::vector<chessMove>>(&chessMovesVector))
 {
 }
 
