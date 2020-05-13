@@ -78,96 +78,84 @@ public:
             chessMove testMove;
             testMove.originalPosition = {originalChessSquare.x, originalChessSquare.y};
             testMove.newPosition = {newChessSquare.x, newChessSquare.y};
-            std::vector<chessMove> listOfChessMoves;
+            std::vector<std::vector<chessMove>> listOfChessMoves;
+            model.getAllPossibleBasicMoves(listOfChessMoves);
+            model.getAllPossibleCastlingMoves(listOfChessMoves,testMove.originalPosition);
             if (model.getPieceOnSpaceColor(testMove.originalPosition) == currentColorToMove)
             {
-                model.getAllPossibleBasicMoves(listOfChessMoves, testMove.originalPosition);
-                if (std::find(listOfChessMoves.begin(), listOfChessMoves.end(), testMove) != listOfChessMoves.end())
+                int moveFound = findInFirstElement(listOfChessMoves, testMove);
+                if (moveFound != -1)
                 {
-                    model.movePiece(testMove);
-                    objectToDrag->setPosition(sf::Vector2f(-10000.0f, -10000.0f));
-                    widget.removeCheessPieceOnSquare(newChessSquare.x, newChessSquare.y);
-                    widget.placeChessPieceOnSquareByPointer(objectToDrag, newChessSquare.x, newChessSquare.y);
+                    widget.placeChessPieceOnSquareByPointer(objectToDrag, originalChessSquare.x, originalChessSquare.y);
+                    for (int i = 0; i < listOfChessMoves[moveFound].size(); i++)
+                    {
+                        model.movePiece(listOfChessMoves[moveFound][i]);
+                        widget.removeCheessPieceOnSquare(listOfChessMoves[moveFound][i].newPosition.row, listOfChessMoves[moveFound][i].newPosition.collumm);
+                        widget.placeChessPieceOnSquare(listOfChessMoves[moveFound][i].originalPosition.row, listOfChessMoves[moveFound][i].originalPosition.collumm,
+                                                       listOfChessMoves[moveFound][i].newPosition.row, listOfChessMoves[moveFound][i].newPosition.collumm);
+                    }
                     iterateColor();
                 }
+
                 else
                 {
-                    listOfChessMoves.clear();
-                    model.getAllPossibleCastlingMoves(listOfChessMoves, testMove.originalPosition);
-                    std::vector<chessMove>::iterator it = std::find(listOfChessMoves.begin(), listOfChessMoves.end(), testMove);
-                    if (it != listOfChessMoves.end())
-                    {
-                        objectToDrag->setPosition(sf::Vector2f(-10000.0f, -10000.0f));
-                        it++;
-                        model.movePiece(*it);
-                        widget.removeCheessPieceOnSquare(it->newPosition.row, it->newPosition.collumm);
-                        widget.placeChessPieceOnSquare(it->originalPosition.row, it->originalPosition.collumm, it->newPosition.row, it->newPosition.collumm);
-                        model.movePiece(testMove);
-                        widget.removeCheessPieceOnSquare(newChessSquare.x, newChessSquare.y);
-                        widget.placeChessPieceOnSquareByPointer(objectToDrag, newChessSquare.x, newChessSquare.y);
-                        iterateColor();
-                    }
-                    else
-                    {
-                        widget.placeChessPieceOnSquareByPointer(objectToDrag, originalChessSquare.x, originalChessSquare.y);
-                    }
+                    widget.placeChessPieceOnSquareByPointer(objectToDrag, originalChessSquare.x, originalChessSquare.y);
                 }
             }
         else
         {
             widget.placeChessPieceOnSquareByPointer(objectToDrag, originalChessSquare.x, originalChessSquare.y);
         }
+
         }
+    leftButtonIsPressed = false;
+    isDragging = false;
+    objectToDrag = nullptr;
+    draggingOffset = sf::Vector2f(0.0f, 0.0f);
+    return leftButtonIsPressed;
+}
 
-        std::cout << "New Chess Square (row, collumm): " << newChessSquare.x << ", " << newChessSquare.y << std::endl;
-
-        leftButtonIsPressed = false;
-        isDragging = false;
-        objectToDrag = nullptr;
-        draggingOffset = sf::Vector2f(0.0f, 0.0f);
-        return leftButtonIsPressed;
-    }
-
-    int updateMouse(sf::Window &window)
+int
+updateMouse(sf::Window &window)
+{
+    for (int i = numberOfPositionsStored - 1; i > 0; i--)
     {
-        for (int i = numberOfPositionsStored - 1; i > 0; i--)
+        mousePositionf[i] = mousePositionf[i - 1];
+    }
+    mousePositionf[0] = getCurrentPositionf(window);
+    if (leftButtonIsPressed)
+    {
+        framesLeftButtonIsHeld = framesLeftButtonIsHeld + 1;
+        if (framesTillIsDraggingIsToggled <= framesLeftButtonIsHeld)
         {
-            mousePositionf[i] = mousePositionf[i - 1];
-        }
-        mousePositionf[0] = getCurrentPositionf(window);
-        if (leftButtonIsPressed)
-        {
-            framesLeftButtonIsHeld = framesLeftButtonIsHeld + 1;
-            if (framesTillIsDraggingIsToggled <= framesLeftButtonIsHeld)
+            isDragging = true;
+            if (framesTillIsDraggingIsToggled == framesLeftButtonIsHeld)
             {
-                isDragging = true;
-                if (framesTillIsDraggingIsToggled == framesLeftButtonIsHeld)
+                if (objectToDrag)
                 {
-                    if (objectToDrag)
-                    {
-                        draggingOffset = mousePositionf[0] - objectToDrag->getPosition();
-                    }
+                    draggingOffset = mousePositionf[0] - objectToDrag->getPosition();
                 }
             }
         }
-        return 0;
     }
+    return 0;
+}
 
-    inline bool getIsDragging()
-    {
-        return isDragging;
-    }
+inline bool getIsDragging()
+{
+    return isDragging;
+}
 
-    inline sf::Vector2f getDragOffset()
-    {
-        return draggingOffset;
-    }
+inline sf::Vector2f getDragOffset()
+{
+    return draggingOffset;
+}
 
-    chessPiece *getObjectToDrag()
-    {
-        return objectToDrag;
-    }
-
-} mouse;
+chessPiece *getObjectToDrag()
+{
+    return objectToDrag;
+}
+}
+mouse;
 
 #endif
