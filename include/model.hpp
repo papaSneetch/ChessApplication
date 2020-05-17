@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <bitset>
 
 namespace chessModelInformation
 {
@@ -17,12 +18,15 @@ namespace chessModelInformation
         bool operator==(const chessPosition &position);
     };
 
+    class chessPieceModel;
+    
     struct chessMove
     {
         chessPosition originalPosition;
         chessPosition newPosition;
+        chessPieceModel* replacedPiece;
+        bool firstMove;
         bool enPessant = false;
-
         bool operator==(const chessMove &move);
     };
 
@@ -32,6 +36,7 @@ namespace chessModelInformation
     {
         chessMove lastPawnMove;
     };
+
 
     class chessPieceModel
     {
