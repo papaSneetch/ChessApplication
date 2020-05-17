@@ -64,7 +64,7 @@ namespace chessModelInformation
     class kingPieceModel : public chessPieceModel
     {
         using chessPieceModel::chessPieceModel;
-
+        static bool castling;
     public:
         std::vector<castlingInformation> castlingParameters;
         void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
@@ -161,13 +161,10 @@ public:
     void setChessPiece(chessPieceModel *chesspiece, chessPosition position);
     void movePiece(chessMove move);
     bool checkMove(chessMove move);
-    void getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves));
+    void getAllPossibleMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves));
     void getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), chessPosition position);
     void getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), int color);
-    void getAllPossibleCastlingMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves));
-    void getAllPossibleCastlingMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), chessPosition position);
-    void getAllPossibleCastlingMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), int color);
-    bool checkIfSpaceIsAttacked(chessPosition spaceBeingAttacked, int defendingColor);
+    bool checkIfSpaceIsAttacked(std::vector<chessPosition> spaceBeingAttacked, int defendingColor);
     int getPieceOnSpaceColor(chessPosition position);
 };
 

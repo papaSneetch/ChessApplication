@@ -60,18 +60,18 @@ void chessModel::setChessPiece(chessPieceModel *chesspiece, chessPosition positi
 
 void chessModel::movePiece(chessMove move)
 {
-    pawnPieceModel *pawnPiece = dynamic_cast<pawnPieceModel *> (chessBoard[move.originalPosition.row][move.originalPosition.collumm]);
+    pawnPieceModel *pawnPiece = dynamic_cast<pawnPieceModel *>(chessBoard[move.originalPosition.row][move.originalPosition.collumm]);
     if (pawnPiece)
     {
-       pawnPiece ->enPassent_Info.lastPawnMove = move;
+        pawnPiece->enPassent_Info.lastPawnMove = move;
     }
-    
+
     chessBoard[move.originalPosition.row][move.originalPosition.collumm]->isMoved = true;
     chessBoard[move.newPosition.row][move.newPosition.collumm] = chessBoard[move.originalPosition.row][move.originalPosition.collumm];
     chessBoard[move.originalPosition.row][move.originalPosition.collumm] = &defaultnullPieceModel;
 }
 
-void chessModel::getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves))
+void chessModel::getAllPossibleMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves))
 {
     for (int row = 0; row < 8; row++)
     {
@@ -101,44 +101,36 @@ void chessModel::getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&l
     }
 }
 
-void chessModel::getAllPossibleCastlingMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), chessPosition position)
+bool checkIfSpaceIsAttackedFunction(std::vector<chessPosition> spaceBeingAttacked, int defendingColor, chessModelInformation::chessPieceModel *(&chessBoard)[8][8])
 {
-    kingPieceModel *testPiece = dynamic_cast<kingPieceModel *>(chessBoard[position.row][position.collumm]);
-    if (testPiece)
-    {
-        testPiece->getAllPossibleCastlingMoves(position, chessBoard, listOfChessMoves);
-    }
-}
-
-bool checkIfSpaceIsAttackedFunction(chessPosition spaceBeingAttacked, int defendingColor, chessModelInformation::chessPieceModel *(&chessBoard)[8][8])
-{
+    std::vector<std::vector<chessMove>> listOfChessMoves;
     for (int row = 0; row < 8; row++)
     {
         for (int collumm = 0; collumm < 8; collumm++)
         {
-            int currentColor = chessBoard[row][collumm]->getPieceColor();
-            if ((currentColor != defendingColor) && (currentColor != -1))
+            if (chessBoard[row][collumm]->getPieceColor() != defendingColor)
             {
-                std::vector<std::vector<chessMove>> listOfChessMoves;
                 chessPosition Testposition = {row, collumm};
                 chessBoard[row][collumm]->getAllPossibleMoves(Testposition, chessBoard, listOfChessMoves);
-                for (int i = 0; i < listOfChessMoves.size(); i++)
-                {
-                    if ((listOfChessMoves[i][1].newPosition.row == spaceBeingAttacked.row) &&
-                        (listOfChessMoves[i][1].newPosition.collumm == spaceBeingAttacked.collumm))
-                    {
-                        return true;
-                    }
-                }
+            }
+        }
+    }
+    for (int j = 0; j < spaceBeingAttacked.size(); j++)
+    {
+        for (int i = 0; i < listOfChessMoves.size(); i++)
+        {
+            if (listOfChessMoves[i][0].newPosition == spaceBeingAttacked[j])
+            {
+                return true;
             }
         }
     }
     return false;
 }
 
-bool chessModel::checkIfSpaceIsAttacked(chessPosition spaceBeingAttacked, int defendingColor)
+bool chessModel::checkIfSpaceIsAttacked(std::vector<chessPosition> spaceBeingAttacked, int defendingColor)
 {
-    return checkIfSpaceIsAttackedFunction(spaceBeingAttacked, defendingColor, this->chessBoard);
+    return checkIfSpaceIsAttackedFunction(spaceBeingAttacked, defendingColor, chessBoard);
 }
 
 int chessModel::getPieceOnSpaceColor(chessPosition position)
@@ -164,6 +156,8 @@ int chessPieceModel::getPieceColor() const
 {
     return pieceColor;
 }
+
+bool kingPieceModel::castling = true;
 
 void kingPieceModel::getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
                                          std::vector<std::vector<chessMove>>(&listOfChessMoves))
@@ -195,46 +189,46 @@ void kingPieceModel::getAllPossibleMoves(const chessPosition position, chessPiec
     conditionalListOfChessMovesPush();
     newChessMove.newPosition.row++;
     conditionalListOfChessMovesPush();
+
+    if (castling)
+    {
+        getAllPossibleCastlingMoves(position, chessBoard, listOfChessMoves);
+    }
 }
 
 void kingPieceModel::getAllPossibleCastlingMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
                                                  std::vector<std::vector<chessMove>>(&listOfChessMoves))
 {
+    castling = false;
     if (!isMoved)
     {
         for (int i = 0; i < castlingParameters.size(); i++)
         {
-            bool movePiece = true;
             if (!(castlingParameters[i].chessPieceToCastle->isMoved))
             {
-                for (int j = 0; j < castlingParameters[i].chessPositionsToCheck.size(); j++)
+                bool movePiece = true;
+                for (int k = 0; k < castlingParameters[i].chessPositionsToClear.size(); k++)
                 {
-                    for (int k = 0; k < castlingParameters[i].chessPositionsToClear.size(); k++)
+                    if ((chessBoard[castlingParameters[i].chessPositionsToClear[k].row][castlingParameters[i].chessPositionsToClear[k].collumm]->getPieceColor()) != -1)
                     {
-                        if ((chessBoard[castlingParameters[i].chessPositionsToClear[k].row][castlingParameters[i].chessPositionsToClear[k].collumm]->getPieceColor()) != -1)
-                        {
-                            movePiece = false;
-                            j = castlingParameters[i].chessPositionsToCheck.size();
-                            k = castlingParameters[i].chessPositionsToClear.size();
-                        }
-                        else if (checkIfSpaceIsAttackedFunction(castlingParameters[i].chessPositionsToCheck[j], pieceColor, chessBoard))
-                        {
-                            movePiece = false;
-                            j = castlingParameters[i].chessPositionsToCheck.size();
-                            k = castlingParameters[i].chessPositionsToClear.size();
-                        }
+                        movePiece = false;
+                        k = castlingParameters[i].chessPositionsToClear.size();
                     }
                 }
                 if (movePiece)
                 {
-                    chessMove move = {position, castlingParameters[i].positionToMoveKingTo};
-                    listOfChessMoves.push_back({move});
-                    move = {castlingParameters[i].positionOfCastlingPiece, castlingParameters[i].positionToMoveCastilingPieceTo};
-                    listOfChessMoves.back().push_back({move});
+                    if (!checkIfSpaceIsAttackedFunction(castlingParameters[i].chessPositionsToCheck, pieceColor, chessBoard))
+                    {
+                        chessMove move = {position, castlingParameters[i].positionToMoveKingTo};
+                        listOfChessMoves.push_back({move});
+                        move = {castlingParameters[i].positionOfCastlingPiece, castlingParameters[i].positionToMoveCastilingPieceTo};
+                        listOfChessMoves.back().push_back({move});
+                    }
                 }
             }
         }
     }
+    castling = true;
 }
 
 void queenPieceModel::getAllPossibleMoves(const chessPosition position, chessModelInformation::chessPieceModel *(&chessBoard)[8][8],
@@ -441,7 +435,7 @@ void pawnPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
             if ((enPassent_Info.lastPawnMove.enPessant == true) && (enPassent_Info.lastPawnMove.newPosition.row == position.row) &&
                 (enPassent_Info.lastPawnMove.newPosition.collumm == (position.collumm + 1)))
             {
-                
+
                 std::cout << "Enpessent to (row, collumm): " << (position.row + direction) << ", " << (position.collumm + 1) << std::endl;
                 newMove = {position, (position.row + direction), (position.collumm + 1)};
                 chessMovesVector.push_back({newMove});
@@ -451,7 +445,7 @@ void pawnPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
 
             else if ((chessBoard[position.row + direction][position.collumm + 1]->getPieceColor() != this->getPieceColor() &&
                       chessBoard[position.row + direction][position.collumm + 1]->getPieceColor() != -1))
-            {  
+            {
                 newMove = {position, (position.row + direction), (position.collumm + 1)};
                 chessMovesVector.push_back({newMove});
             }
@@ -459,7 +453,7 @@ void pawnPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
         if (position.collumm - 1 > -1)
         {
             if ((enPassent_Info.lastPawnMove.enPessant == true) && (enPassent_Info.lastPawnMove.newPosition.row == position.row) &&
-                 (enPassent_Info.lastPawnMove.newPosition.collumm == (position.collumm - 1)))
+                (enPassent_Info.lastPawnMove.newPosition.collumm == (position.collumm - 1)))
             {
                 std::cout << "Enpessent to (row, collumm): " << (position.row + direction) << ", " << (position.collumm + 1) << std::endl;
                 newMove = {position, (position.row + direction), (position.collumm - 1)};
@@ -486,7 +480,7 @@ void pawnPieceModel::getAllPossibleMoves(const chessPosition position, chessMode
     {
         if (chessBoard[position.row + (2 * direction)][position.collumm]->getPieceColor() == -1)
         {
-            newMove = {position, {(position.row + (2 * direction)), (position.collumm)},true};
+            newMove = {position, {(position.row + (2 * direction)), (position.collumm)}, true};
             chessMovesVector.push_back({newMove});
         }
     }

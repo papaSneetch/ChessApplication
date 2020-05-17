@@ -79,8 +79,7 @@ public:
             testMove.originalPosition = {originalChessSquare.x, originalChessSquare.y};
             testMove.newPosition = {newChessSquare.x, newChessSquare.y};
             std::vector<std::vector<chessMove>> listOfChessMoves;
-            model.getAllPossibleBasicMoves(listOfChessMoves);
-            model.getAllPossibleCastlingMoves(listOfChessMoves,testMove.originalPosition);
+            model.getAllPossibleMoves(listOfChessMoves);
             if (model.getPieceOnSpaceColor(testMove.originalPosition) == currentColorToMove)
             {
                 int moveFound = findInFirstElement(listOfChessMoves, testMove);
