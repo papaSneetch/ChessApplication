@@ -79,8 +79,8 @@ public:
             testMove.originalPosition = {originalChessSquare.x, originalChessSquare.y};
             testMove.newPosition = {newChessSquare.x, newChessSquare.y};
             std::vector<std::vector<chessMove>> listOfChessMoves;
-            model.getAllPossibleBasicMoves(listOfChessMoves);
-            model.getAllPossibleCastlingMoves(listOfChessMoves,testMove.originalPosition);
+            model.getAllPossibleMoves(listOfChessMoves);
+            model.clearSpacesToNotAttackAfterMove(listOfChessMoves,currentColorToMove);
             if (model.getPieceOnSpaceColor(testMove.originalPosition) == currentColorToMove)
             {
                 int moveFound = findInFirstElement(listOfChessMoves, testMove);
@@ -102,60 +102,57 @@ public:
                     widget.placeChessPieceOnSquareByPointer(objectToDrag, originalChessSquare.x, originalChessSquare.y);
                 }
             }
-        else
-        {
-            widget.placeChessPieceOnSquareByPointer(objectToDrag, originalChessSquare.x, originalChessSquare.y);
-        }
-
-        }
-    leftButtonIsPressed = false;
-    isDragging = false;
-    objectToDrag = nullptr;
-    draggingOffset = sf::Vector2f(0.0f, 0.0f);
-    return leftButtonIsPressed;
-}
-
-int
-updateMouse(sf::Window &window)
-{
-    for (int i = numberOfPositionsStored - 1; i > 0; i--)
-    {
-        mousePositionf[i] = mousePositionf[i - 1];
-    }
-    mousePositionf[0] = getCurrentPositionf(window);
-    if (leftButtonIsPressed)
-    {
-        framesLeftButtonIsHeld = framesLeftButtonIsHeld + 1;
-        if (framesTillIsDraggingIsToggled <= framesLeftButtonIsHeld)
-        {
-            isDragging = true;
-            if (framesTillIsDraggingIsToggled == framesLeftButtonIsHeld)
+            else
             {
-                if (objectToDrag)
+                widget.placeChessPieceOnSquareByPointer(objectToDrag, originalChessSquare.x, originalChessSquare.y);
+            }
+        }
+        leftButtonIsPressed = false;
+        isDragging = false;
+        objectToDrag = nullptr;
+        draggingOffset = sf::Vector2f(0.0f, 0.0f);
+        return leftButtonIsPressed;
+    }
+
+    int updateMouse(sf::Window &window)
+    {
+        for (int i = numberOfPositionsStored - 1; i > 0; i--)
+        {
+            mousePositionf[i] = mousePositionf[i - 1];
+        }
+        mousePositionf[0] = getCurrentPositionf(window);
+        if (leftButtonIsPressed)
+        {
+            framesLeftButtonIsHeld = framesLeftButtonIsHeld + 1;
+            if (framesTillIsDraggingIsToggled <= framesLeftButtonIsHeld)
+            {
+                isDragging = true;
+                if (framesTillIsDraggingIsToggled == framesLeftButtonIsHeld)
                 {
-                    draggingOffset = mousePositionf[0] - objectToDrag->getPosition();
+                    if (objectToDrag)
+                    {
+                        draggingOffset = mousePositionf[0] - objectToDrag->getPosition();
+                    }
                 }
             }
         }
+        return 0;
     }
-    return 0;
-}
 
-inline bool getIsDragging()
-{
-    return isDragging;
-}
+    inline bool getIsDragging()
+    {
+        return isDragging;
+    }
 
-inline sf::Vector2f getDragOffset()
-{
-    return draggingOffset;
-}
+    inline sf::Vector2f getDragOffset()
+    {
+        return draggingOffset;
+    }
 
-chessPiece *getObjectToDrag()
-{
-    return objectToDrag;
-}
-}
-mouse;
+    chessPiece *getObjectToDrag()
+    {
+        return objectToDrag;
+    }
+} mouse;
 
 #endif

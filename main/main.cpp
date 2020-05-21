@@ -23,7 +23,7 @@ int main()
     
     sf::RenderWindow window(sf::VideoMode(800, 800), "Chess");
     sf::Event event;
-    chessWidget chessObjectWidget(sf::Vector2f(100.0f,60.0f),sf::Vector2f(1.0f,1.0f));
+    chessWidget chessObjectWidget(sf::Vector2f(125.0f,60.0f),sf::Vector2f(1.5f,1.5f));
     chessModel chessObjectModel;
 
     if (color == 0)

@@ -141,6 +141,13 @@ void setBlackKingMetaData(chessWidget *chesswidget, chessModel* chessmodel)
     }
 }
 
+void setPositionsToNotAttack(chessWidget *chesswidget, chessModel* chessmodel)
+{
+    chessmodel ->positionOfChessPiecesToNotAttacked.push_back({7,4});
+    chessmodel ->positionOfChessPiecesToNotAttacked.push_back({0,4});
+
+}
+
 const std::vector <mapValue> whiteMapValue 
 {
     {{0,0},&blackRookPieceModelLeft,chessWidget::blackQueenRook},
@@ -180,7 +187,8 @@ const std::vector <mapValue> whiteMapValue
 const std::vector<void (*)(chessWidget *chesswidget, chessModel* chessmodel)> whiteMapFunctions
 {
     (*setWhitePawnMetaData),
-    (*setWhiteKingMetaData)
+    (*setWhiteKingMetaData),
+    (*setPositionsToNotAttack)
 };
 
 const std::vector <mapValue> blackMapValue 
@@ -222,7 +230,8 @@ const std::vector <mapValue> blackMapValue
 const std::vector<void (*)(chessWidget *chesswidget, chessModel* chessmodel)> blackMapFunctions
 {
     (*setBlackPawnMetaData),
-    (*setBlackKingMetaData)
+    (*setBlackKingMetaData),
+    (*setPositionsToNotAttack)
 };
 
 const boardSetter whiteGameSetter(whiteMapValue,whiteMapFunctions);
