@@ -27,15 +27,11 @@ namespace chessModelInformation
         chessPieceModel* replacedPiece;
         bool firstMove;
         bool enPessant = false;
+        bool noAttackPieceMoved = false;
         bool operator==(const chessMove &move);
     };
 
     int findInFirstElement(std::vector<std::vector<chessMove>> &listOfChessMoves, chessMove testMove);
-    
-    struct enPassantInfo
-    {
-        chessMove lastPawnMove;
-    };
 
 
     class chessPieceModel
@@ -135,7 +131,7 @@ namespace chessModelInformation
         using chessPieceModel::chessPieceModel;
 
     public:
-        static enPassantInfo enPassent_Info;
+        static chessMove &enPassent_Info;
         void setDirection(int changeofRow);
         void getAllPossibleMoves(const chessPosition position, chessPieceModel *(&chessBoard)[8][8],
                                  std::vector<std::vector<chessMove>>(&listOfChessMoves)) override;
@@ -162,15 +158,18 @@ class chessModel
     chessPieceModel *chessBoard[8][8];
 
 public:
+    std::vector<chessPosition> positionOfChessPiecesToNotAttacked;
     chessModel();
     void setChessPiece(chessPieceModel *chesspiece, chessPosition position);
-    void movePiece(chessMove move);
+    void movePiece(chessMove &move);
+    void reverseMove(chessMove &move);
     bool checkMove(chessMove move);
     void getAllPossibleMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves));
     void getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), chessPosition position);
     void getAllPossibleBasicMoves(std::vector<std::vector<chessMove>>(&listOfChessMoves), int color);
     bool checkIfSpaceIsAttacked(std::vector<chessPosition> spaceBeingAttacked, int defendingColor);
     int getPieceOnSpaceColor(chessPosition position);
+    void clearSpacesToNotAttackAfterMove(std::vector<std::vector<chessMove>>(&listOfChessMoves), int defendingColor);
 };
 
 #endif
